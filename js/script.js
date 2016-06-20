@@ -7,6 +7,14 @@ var degreeF = degree.substr(1)
 var containerNode = document.querySelector(".container")
 var buttonContainerNode = document.querySelector("#nav-buttons")
 var bodyNode = document.querySelector("body")
+var inputNode = document.querySelector("#inputBox")
+var selectedCityNode = document.querySelector(".selectedCity")
+
+
+var cities = {}
+	cities['New York'] = "40.7128/74.0059"
+	cities['la'] = "1,1"
+
 var date = new Date(),
 	day = date.getDay(),
 	hour = date.getHours()
@@ -158,6 +166,38 @@ var renderDailyForecast = function(weatherObj){
 
 
 
-   buttonContainerNode.addEventListener('click', changeHash)
+
+
+var userSearch = function(eventObj) {
+	var googleApi = 'AIzaSyC8WtzWw9giW8mJYOT6-xuSPOYmSrYr-FM'
+
+    if (eventObj.keyCode === 13) {
+        
+        //Extract User Input
+        var inputElement = eventObj.target
+        var inputValue = inputElement.value
+        var promiseGeoLookup = $.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address=' + inputValue + '&key=' + googleApi)
+        promiseGeoLookup.then(getLatLong)
+
+        
+
+
+	     //Clear the search box
+        inputElement.value = ''
+    }
+}
+
+var getLatLong = function(apiResponse){
+console.log(apiResponse)
+			location.hash = apiResponse.results[0].geometry.location.lat + "/" + apiResponse.results[0].geometry.location.lng + "/current"
+			selectedCityNode.innerHTML = apiResponse.results[0].formatted_address
+
+		}
+
+
+buttonContainerNode.addEventListener('click', changeHash)
+
 window.addEventListener('hashchange',controller)
 controller()
+
+inputNode.addEventListener("keydown", userSearch) 
