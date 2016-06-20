@@ -1,0 +1,50 @@
+* {
+	box-sizing: border-box;
+	margin: 10px;
+}
+body {
+	padding-left: 20px;
+	background: #99bbff;
+}
+img {
+	max-width: 100%
+}
+.details {
+	color: blue;
+	font-size: 6pt;
+
+}
+.hourCard {
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	justify-content: space-around;
+	width: 10.5%;
+	font-size: 12pt;
+}
+
+.dayCard {
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	justify-content: space-around;
+	width: 10.5%;
+	font-size: 12pt;
+}
+.precipProb {
+	color: blue;
+}
+
+
+.high {
+	color: red;
+}
+.low {
+	color: black;
+}
+.hourSummary {
+	padding-bottom: 60px;
+}
+.daySummary {
+	font-size: 10pt;
+}
