@@ -10,61 +10,56 @@ var bodyNode = document.querySelector("body")
 var inputNode = document.querySelector("#inputBox")
 var selectedCityNode = document.querySelector(".selectedCity")
 
-
-var cities = {}
-	cities['New York'] = "40.7128/74.0059"
-	cities['la'] = "1,1"
-
-var date = new Date(),
-	day = date.getDay(),
-	hour = date.getHours()
 var daysOfWeek = {
-		0: "Sunday",
-		1: "Monday",
-		2: "Tuesday",
-		3: "Wednesday",
-		4: "Thursday",
-		5: "Friday",
-		6: "Saturday",
-		7: "Sunday",
-		8: "Monday",
-		9: "Tuesday",
-		10: "Wednesday",
-		11: "Thursday",
-		12: "Friday",
-		13: "Saturday",
-	}
-var controller = function (){
-	var hashRoute = location.hash.substr(1)
-	if(!hashRoute){
+	0: "Sunday",
+	1: "Monday",
+	2: "Tuesday",
+	3: "Wednesday",
+	4: "Thursday",
+	5: "Friday",
+	6: "Saturday",
+	7: "Sunday",
+	8: "Monday",
+	9: "Tuesday",
+	10: "Wednesday",
+	11: "Thursday",
+	12: "Friday",
+	13: "Saturday",
+}	
+var ViewRouter = Backbone.Router.extend({
+	routes: {
+		":lat/:lng/current": "showCurrent",
+		":lat/:lng/hourly": "showHourly",
+		":lat/:lng/daily": "showDaily",
+		"*default": "getLocation"
+	},
+		
+	getLocation: function(){
 		var locationReader = function(geoPos){
 		location.hash = geoPos.coords.latitude + "/" + geoPos.coords.longitude + "/current"
 		}
-
 		navigator.geolocation.getCurrentPosition(locationReader)
-	}
-	
-	var hashParts = hashRoute.split('/')
-	var	lat = hashParts [0],
-		long = hashParts[1],
-		viewType = hashParts[2],
-		urlWeather = baseUrl + Api + "/" + lat + "," + long
-	 
+	},
 
-	 // Define Promise and Initialize New API Requests to Dark sky 
-
-	var promiseWeather = $.getJSON(urlWeather)
-	if (viewType === 'current'){
+	showCurrent: function(lat,lng){
+		var urlWeather = baseUrl + Api + "/" + lat + "," + lng
+		var promiseWeather = $.getJSON(urlWeather)
 		promiseWeather.then(renderCurrentForecast)
-	}
-	else if (viewType === 'hourly'){
-		promiseWeather.then(renderHourlyForecast)
-	}
-	else if (viewType === 'daily'){
-		promiseWeather.then(renderDailyForecast)
-	}
+	},
+	showHourly: function(lat,lng){
 		
-}
+		var urlWeather = baseUrl + Api + "/" + lat + "," + lng
+		var promiseWeather = $.getJSON(urlWeather)
+		promiseWeather.then(renderHourlyForecast)
+	},
+	showDaily: function(lat,lng){
+	
+		var urlWeather = baseUrl + Api + "/" + lat + "," + lng
+		var promiseWeather = $.getJSON(urlWeather)
+		promiseWeather.then(renderDailyForecast)
+	},
+
+})
 
 var renderCurrentForecast = function(weatherObj){
 	console.log(weatherObj)
@@ -111,9 +106,11 @@ var renderCurrentForecast = function(weatherObj){
 
 	containerNode.innerHTML = htmlString
 	// s: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, or partly-cloudy-night. (De
-
 }
 var renderHourlyForecast = function(weatherObj){
+	var date = new Date(),
+			day = date.getDay(),
+			hour = date.getHours()
 	console.log(weatherObj)
 	var htmlString = ''
 	var forecastViewType = weatherObj.hourly.summary,
@@ -135,6 +132,9 @@ var renderHourlyForecast = function(weatherObj){
 }
 
 var renderDailyForecast = function(weatherObj){
+	var date = new Date(),
+			day = date.getDay(),
+			hour = date.getHours()
 	console.log(weatherObj)
 	var htmlString = ''
 	var forecastViewType = weatherObj.daily.summary,
@@ -155,18 +155,14 @@ var renderDailyForecast = function(weatherObj){
 	containerNode.innerHTML = htmlString
 }
    
-   var changeHash = function (eventObj){
-   	var updatedHash = eventObj.target.id
-   	var hashRoute = location.hash.substr(1)
+var changeHash = function (eventObj){
+	var updatedHash = eventObj.target.id
+	var hashRoute = location.hash.substr(1)
 	var hashParts = hashRoute.split('/')
 	var	lat = hashParts[0],
 		long = hashParts[1]
-   	location.hash = lat + "/" + long + "/" + updatedHash
-   }
-
-
-
-
+		location.hash = lat + "/" + long + "/" + updatedHash
+}
 
 var userSearch = function(eventObj) {
 	var googleApi = 'AIzaSyC8WtzWw9giW8mJYOT6-xuSPOYmSrYr-FM'
@@ -180,8 +176,6 @@ var userSearch = function(eventObj) {
         promiseGeoLookup.then(getLatLong)
 
         
-
-
 	     //Clear the search box
         inputElement.value = ''
     }
@@ -197,7 +191,10 @@ console.log(apiResponse)
 
 buttonContainerNode.addEventListener('click', changeHash)
 
-window.addEventListener('hashchange',controller)
-controller()
-
 inputNode.addEventListener("keydown", userSearch) 
+
+// create a new instance of the router
+var rtr = new ViewRouter()
+
+// tell backbone to start watching the hash and tracking browser history
+Backbone.history.start()
