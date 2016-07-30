@@ -35,10 +35,10 @@ var ViewRouter = Backbone.Router.extend({
 	},
 		
 	getLocation: function(){
-		// var locationReader = function(geoPos){
-		// location.hash = geoPos.coords.latitude + "/" + geoPos.coords.longitude + "/current"
-		// }
-		// navigator.geolocation.getCurrentPosition(locationReader)
+		var locationReader = function(geoPos){
+		location.hash = geoPos.coords.latitude + "/" + geoPos.coords.longitude + "/current"
+		}
+		navigator.geolocation.getCurrentPosition(locationReader)
 	},
 
 	showCurrent: function(lat,lng){
