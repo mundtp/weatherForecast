@@ -9,10 +9,15 @@ body {
 img {
 	max-width: 100%;
 	max-height: 60vh;
+	display:block;
+	margin: auto;
 }
 .details {
 	color: blue;
-	font-size: 6pt;
+	font-size: 12pt;
+	display: block;
+	margin: auto;
+	text-align: center;
 
 }
 .hourCard {
@@ -35,6 +40,10 @@ img {
 .precipProb {
 	color: blue;
 }
+.forecastViewType {
+	font-size: 15pt;
+	text-align: center;
+}
 
 
 .high {
@@ -48,4 +57,22 @@ img {
 }
 .daySummary {
 	font-size: 10pt;
+}
+#inputBox {
+	width:40%;
+	display: block;
+	margin: auto;
+	text-align: center;
+	font-size: 20pt
+}
+#nav-buttons {
+	display: block;
+	margin: auto;
+	text-align: center
+}
+button {
+	font-size: 13pt;
+}
+.selectedCity {
+	text-align: center;
 }
